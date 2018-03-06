@@ -1,35 +1,37 @@
-// v2: do memoization
-#include <vector>
-#include <iterator>
-#include <algorithm>
+// v3. use tabulation
+
 #include <iostream>
 using namespace std;
 
+#define LL long long
+
 #define _trace(x) cout << #x << ": " << x << endl
 
-#define NIL		-1
-#define MAXLEN	1000000
-
-int fibo(vector<int> &lookup, int seed1, int seed2, int n)
+LL fibo(LL seed1, LL seed2, LL n)
 {
 	if (n < 0) exit(1);
+	if (n == 0) return seed1;
+	if (n == 1) return seed2;
 
-	if (lookup[n] == NIL)
+	LL fibo_prev = seed2;
+	LL fibo_prev_prev = seed1;
+	LL fibo_next;
+
+	for (LL i = 2; i <= n; i++)
 	{
-		if (n == 0) return seed1;
-		if (n == 1) return seed2;
+		fibo_next = fibo_prev + fibo_prev_prev;
+		// _trace(fibo_next);
 
-		return fibo(lookup, seed1, seed2, n - 1) + fibo(lookup, seed1, seed2, n - 2);
+		// make the shift
+		fibo_prev_prev = fibo_prev;
+		fibo_prev = fibo_next;
 	}
-	else
-		return lookup[n];
+
+	return fibo_next;
 }
 
 int main()
 {
-	vector<int> lookup(MAXLEN);
-	std::fill(lookup.begin(), lookup.end(), NIL);
-
 	int t;
 	cin >> t;
 
@@ -37,10 +39,10 @@ int main()
 	{
 		int a, b, n;
 		cin >> a >> b >> n;
-		cout << (fibo(lookup, a, b, n) % 1000000007) << endl;
+		cout << (fibo(a, b, n) % 1000000007) << endl;
 
 		t--;
 	}
 
-    return 0;
+	return 0;
 }
